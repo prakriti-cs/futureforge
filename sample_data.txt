@@ -1,0 +1,7 @@
+Prakriti Singh
+CGPA: 8.8
+GitHub: github.com/prakriti
+Skills: Python, SQL, LangGraph
+Education: B.Tech CSE
+Projects: Resume Analyzer, Job Matcher
+ML Intern at XYZ for 2 months

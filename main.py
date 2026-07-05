@@ -1,20 +1,19 @@
-from utils.llm import ask_gemini
 from utils.llm import extract_resume_info
+from resume_agent import analyze_resume
 
-from utils.llm import extract_resume_info
+with open("sample_data.txt", "r", encoding="utf-8") as f:
+    resume_text = f.read()
 
-resume_text = """
-Prakriti Singh
-CGPA: 8.8
-GitHub: github.com/prakriti
-Skills: Python, SQL, LangGraph
-Education: B.Tech CSE
-Projects: Resume Analyzer, Job Matcher
-ML Intern at XYZ for 2 months
-"""
+
 
 result = extract_resume_info(resume_text)
-
+#extract
 print(result.candidate_name)
 print(result.skills)
-print(result.no_of_internships)
+print(result.education)
+#analysis
+analysis = analyze_resume(resume_text, "AI/ML Intern")
+print("Strengths:", analysis.strengths)
+print("Weaknesses:", analysis.weaknesses)
+print("Missing Keywords:", analysis.missing_keywords)
+print("Fit Summary:", analysis.fit_summary)
