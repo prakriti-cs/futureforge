@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv 
 from google import genai 
 from langchain_google_genai import ChatGoogleGenerativeAI 
-from pydantic import BaseModel 
+from pydantic import BaseModel
 
 #schema 
 class ExperienceItem(BaseModel): 
