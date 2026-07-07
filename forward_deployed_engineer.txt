@@ -1,0 +1,53 @@
+Role: Forward Deployed Engineer (FDE)
+
+Overview:
+A Forward Deployed Engineer works closely with users/customers to understand real-world problems and build technical solutions quickly in production-like environments. The role combines software engineering, problem solving, product thinking, deployment mindset, and client-facing adaptability. It often values generalist engineers who can build fast, debug messy systems, and translate ambiguous business/user needs into working software.
+
+Required Skills:
+- Strong programming ability in at least one language (Python / Java / TypeScript / Go etc.)
+- Solid software engineering fundamentals
+- Data Structures and Algorithms
+- API integration and backend development ability
+- Database fundamentals (SQL)
+- Ability to work across the stack when needed
+- Strong debugging and problem-solving skills
+- Git / GitHub
+- Ability to understand real-world workflows and convert them into technical solutions
+- Communication skills and requirement understanding
+- Comfort with ambiguity and fast iteration
+
+Preferred Skills:
+- Full-stack development experience
+- Cloud basics and deployment understanding
+- Docker / containers
+- Scripting / automation
+- Data processing pipelines
+- LLM / AI application integration
+- System integration work
+- Analytics / dashboards / internal tools building
+- Security and access-control basics
+- Experience building customer-facing tools
+- Product thinking and rapid prototyping
+- Experience with enterprise workflows / internal tooling
+
+Expected Projects / Portfolio Signals:
+- End-to-end full-stack application solving a real workflow problem
+- Internal tool / dashboard / automation platform style project
+- Resume intelligence / workflow automation / agentic AI tool
+- API integration project involving multiple services
+- Data + application hybrid project
+- Project showing deployment, user flow, and practical problem-solving
+- Chat / collaboration / productivity / workflow assistant app
+- AI-powered product with frontend + backend + orchestration
+
+Good Evidence in Resume:
+- Projects that solve practical user problems, not just academic toy tasks
+- Cross-functional projects involving backend, frontend, data, or AI together
+- Evidence of rapid prototyping, integration work, or customer/user-facing thinking
+- Strong ownership in projects and clear impact statements
+
+Common Skill Gaps:
+- Good coding skills but no end-to-end product/project evidence
+- No full-stack or integration experience
+- Resume too theory-heavy and not execution-focused
+- Poor demonstration of problem framing and solution ownership
