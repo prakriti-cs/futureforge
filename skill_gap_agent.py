@@ -34,7 +34,7 @@ def get_role_context(target_role: str, k: int = 3) -> str:
         embedding_function=embeddings
     )
 
-    query = f"Required skills, preferred skills and expected projects for {target_role}"
+    query = f"Required skills, preferred skills and expected projects, and common skill gaps for {target_role}"
     docs = vector_store.similarity_search(query, k=k)
 
     context = "\n\n".join(doc.page_content for doc in docs)
@@ -42,14 +42,14 @@ def get_role_context(target_role: str, k: int = 3) -> str:
 
 
 def analyze_skill_gap(resume_text: str, target_role: str) -> SkillGapResult:
-    # Step 1: extract structured resume info
+    
     resume_info = extract_resume_info(resume_text)
     resume_data = resume_info.model_dump()
 
-    # Step 2: retrieve role context from ChromaDB
+    
     retrieved_context = get_role_context(target_role)
 
-    # Step 3: create LLM
+    
     llm = ChatGoogleGenerativeAI(
         model="gemini-2.5-flash",
         google_api_key=os.getenv("GEMINI_API_KEY")
@@ -57,7 +57,7 @@ def analyze_skill_gap(resume_text: str, target_role: str) -> SkillGapResult:
 
     structured_llm = llm.with_structured_output(SkillGapResult)
 
-    # Step 4: prompt
+    
     prompt = f"""
 You are a Skill Gap Analysis Agent.
 
