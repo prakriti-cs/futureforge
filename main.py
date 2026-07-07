@@ -1,21 +1,23 @@
 from utils.llm import extract_resume_info
 from resume_agent import analyze_resume
 from pdf_reader import text_from_pdf
+from skill_gap_agent import analyze_skill_gap
+from learning_planner_agent import generate_learning_plan
 
 
 #text file
-with open("sample_data.txt", "r", encoding="utf-8") as f:
-    resume_text = f.read()
+"""with open("sample_data.txt", "r", encoding="utf-8") as f:
+    resume_text = f.read()"""
 
 #pdf
-"""resume_text = text_from_pdf("resume.pdf")"""
+resume_text = text_from_pdf("sde_sample_resume.pdf")
 
-result = extract_resume_info(resume_text)
+extract_result = extract_resume_info(resume_text)
 
 #extract
-"""print(result.candidate_name)
-print(result.skills)
-print(result.education)
+print(extract_result.candidate_name)
+print(extract_result.skills)
+print(extract_result.education)
 
 #analysis
 analysis = analyze_resume(resume_text, "AI/ML Intern")
@@ -24,25 +26,37 @@ print("Weaknesses:", analysis.weaknesses)
 print("Missing Keywords:", analysis.missing_keywords)
 print("Fit Summary:", analysis.fit_summary)
 
-#skill gap
-required_skills =["Python", "Machine Learning", "SQL", "TensorFlow"]
-gap_result = skill_gap(resume_text, required_skills)
-print("matched_skills:")
-print(gap_result["matched_skills"])
-print("missing_skills:")
-print( gap_result["missing_skills"])"""
-from skill_gap_agent import analyze_skill_gap
 
+
+#skill_gap
 with open("sample_data.txt", "r", encoding="utf-8") as f:
     resume_text = f.read()
 
-result = analyze_skill_gap(resume_text, "AI/ML Intern")
+gap_result = analyze_skill_gap(resume_text, "AI/ML Intern")
 
-print("TARGET ROLE:", result.target_role)
-print("MATCHED SKILLS:", result.matched_skills)
-print("MISSING REQUIRED SKILLS:", result.missing_required_skills)
-print("MISSING PREFERRED SKILLS:", result.missing_preferred_skills)
-print("PROJECT GAPS:", result.project_gaps)
-print("SKILL MATCH SCORE:", result.skill_match_score)
-print("PRIORITY SKILLS:", result.priority_skills_to_learn)
-print("SUMMARY:", result.summary)
+print("TARGET ROLE:", gap_result.target_role)
+print("MATCHED SKILLS:", gap_result.matched_skills)
+print("MISSING REQUIRED SKILLS:", gap_result.missing_required_skills)
+print("MISSING PREFERRED SKILLS:", gap_result.missing_preferred_skills)
+print("PROJECT GAPS:", gap_result.project_gaps)
+print("SKILL MATCH SCORE:", gap_result.skill_match_score)
+print("PRIORITY SKILLS:", gap_result.priority_skills_to_learn)
+print("SUMMARY:", gap_result.summary)
+
+
+
+#learning_agent
+
+learning_result = generate_learning_plan(resume_text, "AI/ML Intern")
+
+print("TARGET ROLE:", learning_result.target_role)
+print("CURRENT STRENGTHS:", learning_result.current_strengths)
+print("PRIORITY SKILLS:", learning_result.priority_skills_to_learn)
+print("RECOMMENDED PROJECTS:", learning_result.recommended_projects)
+print("SUMMARY:", learning_result.summary)
+
+for phase in learning_result.learning_plan:
+    print("\nPHASE:", phase.phase)
+    print("FOCUS SKILLS:", phase.focus_skills)
+    print("TOPICS:", phase.topics)
+    print("DELIVERABLE:", phase.deliverable)
