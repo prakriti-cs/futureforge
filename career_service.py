@@ -1,7 +1,6 @@
 from pipeline_graph import build_career_graph
 from pdf_reader import text_from_pdf
 
-
 graph = build_career_graph()
 
 
@@ -17,10 +16,13 @@ def run_career_pipeline_from_text(resume_text: str, target_role: str) -> dict:
     })
 
     return {
-        "resume_info": final_state.get("resume_info"),
-        "resume_analysis": final_state.get("resume_analysis"),
-        "skill_gap": final_state.get("skill_gap"),
-        "learning_plan": final_state.get("learning_plan"),
+        "success": final_state.get("error") is None,
+        "data": {
+            "resume_info": final_state.get("resume_info"),
+            "resume_analysis": final_state.get("resume_analysis"),
+            "skill_gap": final_state.get("skill_gap"),
+            "learning_plan": final_state.get("learning_plan"),
+        },
         "error": final_state.get("error")
     }
 
