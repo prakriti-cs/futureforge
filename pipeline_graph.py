@@ -1,22 +1,25 @@
-from typing import TypedDict, Optional
+
 from langgraph.graph import StateGraph, START, END
 
 from utils.llm import extract_resume_info
 from resume_agent import analyze_resume
 from skill_gap_agent import analyze_skill_gap
 from learning_planner_agent import generate_learning_plan
-
+from typing import TypedDict, Optional, Any
 
 class CareerState(TypedDict):
     resume_text: str
     target_role: str
 
-    resume_info: Optional[dict]
-    resume_analysis: Optional[dict]
-    skill_gap: Optional[dict]
-    learning_plan: Optional[dict]
+    resume_info: Optional[dict[str, Any]]
+    resume_analysis: Optional[dict[str, Any]]
+    skill_gap: Optional[dict[str, Any]]
+    learning_plan: Optional[dict[str, Any]]
 
     error: Optional[str]
+
+
+
 
 
 def extract_resume_node(state: CareerState):
@@ -27,69 +30,54 @@ def extract_resume_node(state: CareerState):
             "error": None
         }
     except Exception as e:
-        return {
-            "error": f"Resume extraction failed: {str(e)}"
-        }
+        return {"error": f"Resume extraction failed: {str(e)}"}
+
 
 def resume_analysis_node(state: CareerState):
     try:
-        # If your analyze_resume takes resume_text + target_role:
-        result = analyze_resume(state["resume_text"], state["target_role"])
-
-        # If result is Pydantic:
-        if hasattr(result, "model_dump"):
-            result = result.model_dump()
-
+        result = analyze_resume(state["resume_info"], state["target_role"])
         return {
-            "resume_analysis": result,
+            "resume_analysis": result.model_dump(),
             "error": None
         }
     except Exception as e:
-        return {
-            "error": f"Resume analysis failed: {str(e)}"
-        }
+        return {"error": f"Resume analysis failed: {str(e)}"}
+
 
 def skill_gap_node(state: CareerState):
     try:
-        result = analyze_skill_gap(state["resume_text"], state["target_role"])
-
-        if hasattr(result, "model_dump"):
-            result = result.model_dump()
-
+        result = analyze_skill_gap(state["resume_info"], state["target_role"])
         return {
-            "skill_gap": result,
+            "skill_gap": result.model_dump(),
             "error": None
         }
     except Exception as e:
-        return {
-            "error": f"Skill gap analysis failed: {str(e)}"
-        }
+        return {"error": f"Skill gap analysis failed: {str(e)}"}
+
 
 def learning_plan_node(state: CareerState):
     try:
-        result = generate_learning_plan(state["resume_text"], state["target_role"])
-
-        if hasattr(result, "model_dump"):
-            result = result.model_dump()
-
+        result = generate_learning_plan(
+            state["resume_info"],
+            state["skill_gap"],
+            state["target_role"]
+        )
         return {
-            "learning_plan": result,
+            "learning_plan": result.model_dump(),
             "error": None
         }
     except Exception as e:
-        return {
-            "error": f"Learning planner failed: {str(e)}"
-        }
+        return {"error": f"Learning planner failed: {str(e)}"}
 
 def route_after_extraction(state: CareerState):
     if state.get("error"):
         return "end"
 
     resume_info = state.get("resume_info")
-
-    if not resume_info:
+    if resume_info is None:
         return "end"
-    if(
+
+    if (
         not resume_info.get("candidate_name")
         and not resume_info.get("skills")
         and not resume_info.get("education")
@@ -104,7 +92,7 @@ def route_after_skill_gap(state: CareerState):
         return "end"
 
     skill_gap = state.get("skill_gap")
-    if not skill_gap:
+    if skill_gap is None:
         return "end"
 
     missing_required = skill_gap.get("missing_required_skills", [])
@@ -114,6 +102,11 @@ def route_after_skill_gap(state: CareerState):
         return "end"
 
     return "learning_plan"
+
+
+
+
+
 
 def build_career_graph():
     graph_builder = StateGraph(CareerState)
@@ -147,5 +140,4 @@ def build_career_graph():
 
     graph_builder.add_edge("learning_plan", END)
 
-    graph = graph_builder.compile()
-    return graph
+    return graph_builder.compile()

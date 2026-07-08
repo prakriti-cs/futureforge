@@ -1,12 +1,8 @@
 import os
 from dotenv import load_dotenv
 from pydantic import BaseModel
-
 from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
 from langchain_chroma import Chroma
-
-from utils.llm import extract_resume_info
-from skill_gap_agent import analyze_skill_gap
 
 load_dotenv()
 
@@ -42,71 +38,57 @@ def get_learning_context(target_role: str, k: int = 4) -> str:
 
     query = f"Learning roadmap, required skills, project suggestions, and progression plan for {target_role}"
     docs = vector_store.similarity_search(query, k=k)
+    return "\n\n".join(doc.page_content for doc in docs)
 
-    context = "\n\n".join(doc.page_content for doc in docs)
-    return context
-
-
-def generate_learning_plan(resume_text: str, target_role: str) -> LearningPlanResult:
-   
-    resume_info = extract_resume_info(resume_text)
-    resume_data = resume_info.model_dump()
-
-    
-    skill_gap = analyze_skill_gap(resume_text, target_role)
-    skill_gap_data = skill_gap.model_dump()
-
-    
+def generate_learning_plan(
+    resume_info: dict,
+    skill_gap: dict,
+    target_role: str
+) -> LearningPlanResult:
     learning_context = get_learning_context(target_role)
 
-    
     llm = ChatGoogleGenerativeAI(
         model="gemini-2.5-flash",
         google_api_key=os.getenv("GEMINI_API_KEY")
     )
-
     structured_llm = llm.with_structured_output(LearningPlanResult)
 
     prompt = f"""
 You are a Learning Planner Agent.
 
-Your task is to create a practical learning roadmap for a student / intern candidate.
-
 Target Role:
 {target_role}
 
 Candidate Resume Data:
-{resume_data}
+{resume_info}
 
 Skill Gap Analysis:
-{skill_gap_data}
+{skill_gap}
 
 Retrieved Learning Context:
 {learning_context}
 
 Instructions:
-1. Use the candidate's resume data and skill gap analysis to identify their current strengths.
+1. Identify the candidate's current strengths.
 2. Focus especially on:
    - missing_required_skills
    - missing_preferred_skills
    - project_gaps
    - priority_skills_to_learn
-3. Create a realistic learning plan divided into 3 phases:
+3. Create a realistic 3-phase learning plan:
    - Phase 1: Foundations / immediate weak areas
    - Phase 2: Core role preparation
-   - Phase 3: Project-building / portfolio readiness
-4. For each phase, return:
+   - Phase 3: Projects / portfolio readiness
+4. For each phase return:
    - phase
    - focus_skills
    - topics
    - deliverable
-5. Recommend 2 to 4 projects relevant to the target role and the candidate’s gaps.
-6. Keep the plan practical for a college student preparing for internships.
-7. Prioritize required skills before preferred skills.
-8. Do not invent fake resume details. Use only reasonable inferences from the provided resume and retrieved role-learning context.
+5. Recommend 2 to 4 projects.
+6. Keep it practical for an internship-seeking student.
 
 Return structured output only.
 """
 
-    result = structured_llm.invoke(prompt)
-    return result
+    return structured_llm.invoke(prompt)
+

@@ -13,7 +13,7 @@ class ResumeAnalysis(BaseModel):
     fit_summary: str
 
 
-def analyze_resume(resume_text: str, target_role: str) -> ResumeAnalysis:
+def analyze_resume(resume_info: dict, target_role: str) -> ResumeAnalysis:
     llm = ChatGoogleGenerativeAI(
         model="gemini-2.5-flash",
         google_api_key=os.getenv("GEMINI_API_KEY")
@@ -27,7 +27,7 @@ def analyze_resume(resume_text: str, target_role: str) -> ResumeAnalysis:
     Analyze the following resume for the target role: {target_role}
 
     Resume:
-    {resume_text}
+    {resume_info}
 
     Return analysis with these fields:
     - strengths

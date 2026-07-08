@@ -10,16 +10,17 @@ class ExperienceItem(BaseModel):
     company:str 
     duration_months:int 
 
-class ResumeInfo(BaseModel): 
-    candidate_name:str 
-    cgpa:float | None = None 
-    github:str | None = None 
-    skills: list[str] 
-    projects: list[str] 
-    education:str 
-    experience:list[ExperienceItem] 
-    College_year:int | None = None 
-    no_of_internships:int | None = None 
+class ResumeInfo(BaseModel):
+    candidate_name: str | None = None
+    cgpa: float | None = None
+    github: str | None = None
+    skills: list[str] = []
+    projects: list[str] = []
+    education: str | None = None
+    experience: list[ExperienceItem] = []
+    college_year: int | None = None
+    no_of_internships: int | None = None
+
 
 load_dotenv() 
 
@@ -47,7 +48,7 @@ def extract_resume_info(resume_text):
     - projects 
     - education 
     - experience 
-    - College_year 
+    - college_year 
     - no_of_internships 
     Rules: 
     - Use only the information present in the resume text. 
